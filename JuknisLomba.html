@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Juknis Lomba Classmeeting</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#f8f4ed;
+    --cream:#F2E7D5;
+    --cream-2:#F7EFE2;
+    --accent:#caa77b;
+    --text:#1b2230;
+    --muted:#556374;
+    --glass: rgba(255,255,255,0.6);
+    --card-shadow: 0 12px 36px rgba(16,24,40,0.12);
+    --radius:18px;
+    --max-width:980px;
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:"Poppins",system-ui,-apple-system,"Segoe UI",Roboto,Arial;
+    background: radial-gradient(800px 400px at 10% 10%, rgba(198,169,128,0.06), transparent 12%),
+                linear-gradient(180deg,var(--bg-1), #fff 60%);
+    color:var(--text);
+    -webkit-font-smoothing:antialiased;
+    padding:28px 18px;
+    scroll-behavior:smooth;
+  }
+
+  /* abstract geometric ornaments */
+  .bg-ornament {
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:0;
+  }
+  .geo {
+    position:absolute;
+    width:420px;
+    height:420px;
+    background: conic-gradient(from 180deg at 50% 50%, rgba(202,167,123,0.14), rgba(242,231,213,0.06));
+    filter: blur(36px);
+    transform: rotate(12deg);
+    border-radius: 28% 72% 45% 55% / 55% 40% 60% 45%;
+    mix-blend-mode: screen;
+  }
+  .geo.g1{left:-120px; top:-80px}
+  .geo.g2{right:-140px; bottom:-80px; width:360px;height:360px;transform:rotate(-8deg);opacity:0.9}
+
+  .stage{
+    position:relative;
+    z-index:2;
+    max-width:var(--max-width);
+    margin:0 auto;
+  }
+
+  .card{
+    background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.78));
+    border-radius:var(--radius);
+    padding:24px;
+    box-shadow:var(--card-shadow);
+    border:1px solid rgba(0,0,0,0.04);
+    overflow:hidden;
+  }
+
+  header { text-align:center; margin-bottom:6px; }
+  header h1{
+    font-size:28px;
+    font-weight:900;
+    letter-spacing:1px;
+    color:var(--text);
+  }
+  header p{
+    margin-top:6px;
+    color:var(--muted);
+    font-weight:600;
+    font-size:14px;
+  }
+
+  /* accordion */
+  .accordion{ margin-top:18px; display:block; }
+  .acc-item{ margin-bottom:14px; border-radius:14px; overflow:hidden; }
+  .acc-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:12px;
+    background:linear-gradient(180deg,var(--cream),var(--cream-2));
+    border:none;
+    padding:16px 20px;
+    font-weight:800;
+    font-size:16px;
+    color:var(--text);
+    border-radius:12px;
+    cursor:pointer;
+    box-shadow:0 8px 22px rgba(20,20,20,0.06);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .acc-btn:hover{ transform:translateY(-3px); box-shadow:0 18px 36px rgba(20,20,20,0.08); }
+  .acc-btn .chev{ font-weight:900; font-size:20px; opacity:0.9 }
+
+  .acc-content{
+    background: rgba(255,255,255,0.92);
+    border-radius:12px;
+    margin-top:10px;
+    padding:14px 18px;
+    border:1px solid rgba(0,0,0,0.03);
+    box-shadow: 0 10px 30px rgba(16,24,40,0.04);
+    overflow:hidden;
+    max-height:0;
+    transition: max-height .42s cubic-bezier(.2,.9,.3,1), opacity .28s ease;
+    opacity:0;
+  }
+  .acc-content.open{ opacity:1; }
+
+  .acc-content h3{
+    text-align:center;
+    text-transform:uppercase;
+    font-weight:900;
+    letter-spacing:1.2px;
+    margin-bottom:8px;
+    font-size:18px;
+  }
+  .acc-content p, .acc-content li{ color:var(--text); font-weight:600; font-size:15px; }
+
+  .acc-content > ol{ counter-reset: item; margin-left:6px; }
+  .acc-content > ol > li{ display:block; counter-increment: item; margin:10px 0; }
+  .acc-content > ol > li::before{
+    content: counter(item) ". ";
+    font-weight:900;
+    margin-right:6px;
+    color:var(--text);
+  }
+
+  .acc-content > ol > li > ol{ counter-reset: subitem; margin-top:8px; margin-left:18px; }
+  .acc-content > ol > li > ol > li{ counter-increment: subitem; margin:6px 0; }
+  .acc-content > ol > li > ol > li::before{
+    content: counter(item) "." counter(subitem) ". ";
+    font-weight:700;
+    margin-right:6px;
+    color:var(--text);
+  }
+
+  .acc-content ol li{ line-height:1.6; }
+  .acc-content ol li strong{ text-transform:uppercase; display:block; margin-bottom:6px; font-weight:900 }
+
+  .acc-item.active{ box-shadow:0 20px 40px rgba(10,20,40,0.06); transform:translateY(-4px); border:1px solid rgba(10,120,220,0.06) }
+
+  footer{ text-align:center; margin-top:20px; font-weight:800; color:var(--muted); font-size:14px; padding:10px 0 }
+
+  .fab{
+    position:fixed;
+    right:18px;
+    border-radius:50%;
+    width:52px;
+    height:52px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    box-shadow:0 12px 30px rgba(16,24,40,0.14);
+    z-index:999;
+    cursor:pointer;
+    transition:transform .12s ease;
+  }
+  .fab:hover{ transform:translateY(-4px) }
+  #shareBtn{ bottom:92px; background:var(--cream); color:var(--text); border:1px solid rgba(0,0,0,0.04); right:18px; position:fixed;}
+  #topBtn{ bottom:18px; background:var(--cream-2); color:var(--text); border:1px solid rgba(0,0,0,0.04); right:18px; position:fixed; display:none; }
+
+  @media (max-width:720px){
+    .card{ padding:18px; border-radius:14px; }
+    header h1{ font-size:22px }
+    .acc-btn{ font-size:15px; padding:14px }
+    .acc-content{ padding:12px }
+    .fab{ width:48px; height:48px; right:14px }
+  }
+</style>
+</head>
+<body>
+
+<!-- decorative abstract shapes -->
+<div class="bg-ornament" aria-hidden="true">
+  <div class="geo g1"></div>
+  <div class="geo g2"></div>
+</div>
+
+<div class="stage">
+  <div class="card" role="application" aria-label="Juknis Lomba Classmeeting">
+
+    <header>
+      <h1>JUKNIS LOMBA CLASSMEETING</h1>
+      <p>Klik nama lomba untuk melihat juknis lomba.</p>
+    </header>
+
+    <div class="accordion" id="accordionRoot">
+
+      <!-- Lomba Futsal (content EXACT as you provided earlier) -->
+      <section class="acc-item" id="acc-futsal" aria-labelledby="btn-futsal">
+        <button class="acc-btn" id="btn-futsal" aria-expanded="false">Lomba Futsal <span class="chev">+</span></button>
+        <div class="acc-content" role="region" aria-hidden="true">
+          <ol>
+            <li><strong>PESERTA</strong>
+              <ol>
+                <li>Setiap kelas mengirim 1 tim.</li>
+                <li>Total pemain 7 orang → 5 inti + 2 cadangan.</li>
+              </ol>
+            </li>
+            <li><strong>WAKTU PERTANDINGAN</strong>
+              <ol>
+                <li>Durasi 2 × 10 menit (waktu kotor).</li>
+                <li>Istirahat 2 menit.</li>
+                <li>Jika skor imbang → penalti 3 penendang.</li>
+              </ol>
+            </li>
+            <li><strong>SISTEM PERTANDINGAN</strong>
+              <ol>
+                <li>Menggunakan sistem gugur atau sesuai ketetapan panitia.</li>
+                <li>Wajib memakai seragam.</li>
+              </ol>
+            </li>
+            <li><strong>PERATURAN MAIN</strong>
+              <ol>
+                <li>Pergantian pemain bebas/rolling.</li>
+                <li>Dilarang melakukan tindakan kasar, provokasi, atau protes berlebihan kepada wasit.</li>
+                <li>wajib memakai seragam (apabila tidak ada maka menggunakan rompi ).</li>
+              </ol>
+            </li>
+            <li><strong>KARTU & DENDA</strong>
+              <ol>
+                <li>Kartu kuning = peringatan + denda 10 ribu.</li>
+                <li>Kartu merah = keluar dari pertandingan + denda 15 ribu.</li>
+              </ol>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+<!-- Lomba Volley -->
+<section class="acc-item" id="acc-volly" aria-labelledby="btn-volly">
+  <button class="acc-btn" id="btn-volly" aria-expanded="false">Lomba Volly <span class="chev">+</span></button>
+  <div class="acc-content" role="region" aria-hidden="true">
+    <ol>
+      <li><strong>PESERTA</strong>
+        <ol>
+          <li>Setiap kelas mengirim 1 tim.</li>
+          <li>Total pemain 6 orang → 3 putra dan 3 putri.</li>
+        </ol>
+      </li>
+
+      <li><strong>WAKTU & SISTEM</strong>
+        <ol>
+          <li>Pertandingan menggunakan sistem Best of Three (3 set, menang 2 set lebih dulu).</li>
+          <li>Set 1 dan Set 2 dimainkan hingga 25 poin (selisih 2 poin).</li>
+          <li>Set 3 (tiebreak) dimainkan hingga 15 poin (selisih 2 poin).</li>
+        </ol>
+      </li>
+
+      <li><strong>PERATURAN</strong>
+        <ol>
+          <li>Pemain wajib memakai sepatu.</li>
+          <li>Dilarang melakukan tindakan kasar, menghina, atau protes berlebihan.</li>
+        </ol>
+      </li>
+
+      <li><strong>PEMENANG</strong>
+        <ol>
+          <li>Tim yang memenangkan 2 set dari 3 set dinyatakan sebagai pemenang.</li>
+          <li>Tim yang kalah akan langsung tersingkir.</li>
+        </ol>
+      </li>
+    </ol>
+  </div>
+</section>
+
+      <!-- Lomba Tenis Meja -->
+      <section class="acc-item" id="acc-tenis" aria-labelledby="btn-tenis">
+        <button class="acc-btn" id="btn-tenis" aria-expanded="false">Lomba Tenis Meja <span class="chev">+</span></button>
+        <div class="acc-content" role="region" aria-hidden="true">
+          <ol>
+            <li><strong>PESERTA</strong>
+              <ol>
+                <li>Setiap kelas mengirim 2 perwakilan peserta putra & putri.</li>
+                <li>Pertandingan bersifat perseorangan (single).</li>
+              </ol>
+            </li>
+            <li><strong>SISTEM PERTANDINGAN</strong>
+              <ol>
+                <li>Menggunakan sistem gugur.</li>
+                <li>Pemenang maju ke babak berikutnya hingga final.</li>
+              </ol>
+            </li>
+            <li><strong>PERATURAN PERTANDINGAN</strong>
+              <ol>
+                <li>Sistem 11 poin, best of 3 game (menang 2 game).</li>
+                <li>Servis bergantian setiap 2 poin.</li>
+                <li>Bola sah jika memantul sekali di meja lawan.</li>
+                <li>Bola menyentuh net saat servis (let) → diulang.</li>
+                <li>Pemain tidak boleh menyentuh meja saat permainan berlangsung.</li>
+                <li>Dilarang protes berlebihan; wajib menjaga sportivitas.</li>
+              </ol>
+            </li>
+            <li><strong>PENENTUAN PEMENANG</strong>
+              <ol>
+                <li>Menang 2 dari 3 game.</li>
+                <li>Jika skor 10–10, berlaku deuce (selisih 2 poin).</li>
+              </ol>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Lomba Ranking 1 -->
+      <section class="acc-item" id="acc-ranking" aria-labelledby="btn-ranking">
+        <button class="acc-btn" id="btn-ranking" aria-expanded="false">Lomba Ranking 1 <span class="chev">+</span></button>
+        <div class="acc-content" role="region" aria-hidden="true">
+          <ol>
+            <li><strong>PESERTA</strong>
+              <ol>
+                <li/>Perwakilan kelas mengirim 5 peserta.</li>
+                <li>Semua peserta berdiri di area lomba dan siap mengikuti instruksi panitia.</li>
+              </ol>
+            </li>
+            <li><strong>SISTEM LOMBA</strong>
+              <ol>
+                <li>Panitia membacakan soal Benar atau Salah.</li>
+                <li>Peserta menjawab menggunakan kertas: bagian depan bertuliskan BENAR, bagian belakang bertuliskan SALAH.</li>
+                <li>Peserta yang menjawab salah langsung gugur dan keluar dari area lomba.</li>
+                <li>Peserta yang benar lanjut ke soal berikutnya sampai tersisa 1 orang.</li>
+              </ol>
+            </li>
+            <li><strong>Peraturan Lomba</strong>
+              <ol>
+                <li>Peserta wajib mengikuti instruksi pembawa acara/juri.</li>
+                <li>Tidak boleh mencontek atau melihat jawaban peserta lain.</li>
+              </ol>
+            </li>
+            <li><strong>PENENTUAN PEMENANG</strong>
+              <ol>
+                <li>Pemenang adalah peserta terakhir yang bertahan (Ranking 1).</li>
+                <li>Jika soal habis namun masih ada lebih dari satu peserta, panitia memberikan soal tambahan.</li>
+              </ol>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Lomba Senam Anak Bangsa -->
+      <section class="acc-item" id="acc-senam" aria-labelledby="btn-senam">
+        <button class="acc-btn" id="btn-senam" aria-expanded="false">Lomba Senam Anak Bangsa <span class="chev">+</span></button>
+        <div class="acc-content" role="region" aria-hidden="true">
+          <ol>
+            <li><strong>PESERTA</strong>
+              <ol>
+                <li>Setiap kelas mengirim 4 peserta.</li>
+                <li>Senam dilakukan secara berkelompok.</li>
+              </ol>
+            </li>
+            <li><strong>SISTEM PENILAIAN</strong>
+              <ol>
+                <li>Hafalan gerakan (paling hafal dan urutannya benar).</li>
+                <li>Kelancaran & kelincahan (gerakan luwes, kompak, tidak ragu).</li>
+                <li>Kekompakan (gerak bareng, ritme sama).</li>
+                <li>Ekspresi & semangat saat senam.</li>
+              </ol>
+            </li>
+            <li><strong>PERATURAN</strong>
+              <ol>
+                <li>Musik senam ditentukan panitia.</li>
+                <li>Peserta harus mengikuti seluruh rangkaian gerakan dari awal hingga akhir.</li>
+                <li>Peserta dilarang keluar barisan saat penilaian.</li>
+                <li>Tidak boleh melakukan gerakan tambahan di luar koreografi resmi panitia.</li>
+                <li>Menjaga sikap dan sportivitas selama perlombaan.</li>
+              </ol>
+            </li>
+            <li><strong>PENENTUAN PEMENANG</strong>
+              <ol>
+                <li>Tim dengan nilai tertinggi dari juri dinyatakan sebagai pemenang.</li>
+              </ol>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+    </div> <!-- accordion -->
+    <footer>CREATED BY : Osis Mts Darussalam</footer>
+  </div><!-- card -->
+</div><!-- stage -->
+
+<button id="shareBtn" class="fab" aria-label="Bagikan">⤴</button>
+<button id="topBtn" class="fab" aria-label="Ke atas">↑</button>
+
+<script>
+(function(){
+  const items = Array.from(document.querySelectorAll('.acc-item'));
+  items.forEach(item=>{
+    const btn = item.querySelector('.acc-btn');
+    const content = item.querySelector('.acc-content');
+    btn.addEventListener('click', ()=>{
+      const isOpen = content.style.maxHeight && content.style.maxHeight !== '0px';
+      items.forEach(i=>{
+        i.classList.remove('active');
+        i.querySelector('.acc-content').style.maxHeight = null;
+        i.querySelector('.acc-content').classList.remove('open');
+        i.querySelector('.acc-btn').setAttribute('aria-expanded','false');
+        i.querySelector('.acc-btn').querySelector('.chev').textContent = '+';
+      });
+      if(!isOpen){
+        item.classList.add('active');
+        content.style.maxHeight = content.scrollHeight + 'px';
+        content.classList.add('open');
+        btn.setAttribute('aria-expanded','true');
+        btn.querySelector('.chev').textContent = '-';
+        setTimeout(()=> { content.setAttribute('tabindex','-1'); content.focus(); }, 260);
+      }
+    });
+  });
+})();
+
+(function(){
+  const obs = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{
+      const item = e.target.closest('.acc-item');
+      if(!item) return;
+      if(e.isIntersecting) item.classList.add('active');
+      else item.classList.remove('active');
+    });
+  }, { threshold: 0.45 });
+  document.querySelectorAll('.acc-content').forEach(el=> obs.observe(el));
+})();
+
+const topBtn = document.getElementById('topBtn');
+window.addEventListener('scroll', ()=>{
+  topBtn.style.display = window.scrollY > 300 ? 'flex' : 'none';
+});
+topBtn.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+
+const shareBtn = document.getElementById('shareBtn');
+shareBtn.addEventListener('click', async ()=>{
+  const shareData = {
+    title: document.title,
+    text: 'Juknis Lomba Classmeeting — lihat juknis lengkap.',
+    url: location.href
+  };
+  if(navigator.share){
+    try{ await navigator.share(shareData); } catch(e){ }
+  } else {
+    try{
+      await navigator.clipboard.writeText(location.href);
+      alert('Link disalin ke clipboard.');
+    } catch(e){
+      prompt('Salin link ini:', location.href);
+    }
+  }
+});
+
+window.addEventListener('resize', ()=>{
+  document.querySelectorAll('.acc-content.open').forEach(c=>{
+    c.style.maxHeight = c.scrollHeight + 'px';
+  });
+});
+</script>
+</body>
+</html>
